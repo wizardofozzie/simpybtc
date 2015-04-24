@@ -554,28 +554,7 @@ def ecdsa_recover(msg, sig):
 
 # A simple implementation of Pbkdf2 using stock python modules.
 # Modifications based on https://matt.ucc.asn.au/src/pbkdf2.py
-def pbkdf_two(password, salt, iters, keylen, digestmod):    
-    """Run the PBKDF2 (Password-Based Key Derivation Function 2) algorithm
-     and return the derived key. The arguments are:
- 
-     password (bytes or bytearray) -- the input password
-     salt (bytes or bytearray) -- a cryptographic salt
-     iters (int) -- number of iterations
-     keylen (int) -- length of key to derive
-     digestmod -- a cryptographic hash function: either a module supporting PEP 247, a hashlib constructor, or (in Python 3.4 or later) the name of a hash function.
- 
-     >>> import hashlib
-     >>> from binascii import hexlify, unhexlify
-     >>> password = b'Squeamish Ossifrage'
-     >>> salt = unhexlify(b'1234567878563412')
-     >>> hexlify(pbkdf2(password, salt, 500, 16, hashlib.sha1))
-     b'9e8f1072bdf5ef042bd988c7da83e43b'
-     >>> password = b'All n-entities must communicate with other n-entities via n-1 entiteeheehees'
-     >>> salt = unhexlify(b'1234567878563412')
-     >>> hexlify(pbkdf2(password, salt, 500, 16, hashlib.sha512))
-     b'6a8970bf68c92caea84a8df285108586'
-
-    """
+def bin_pbkdf2(password, salt, iters, keylen, digestmod):    
     h = hmac.new(password, digestmod=digestmod)
     def prf(data):
         hm = h.copy()
