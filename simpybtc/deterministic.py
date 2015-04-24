@@ -7,7 +7,7 @@ from simpybtc.main import *
 # Electrum wallets
 
 # Takes Electrum v2.0 13 word mnemonic string and returns seed. Only works on English for now
-def electrum_bin_extract_seed(phrase, password=''):
+def bin_electrum_extract_seed(phrase, password=''):
     if isinstance(phrase, list):
         mnemonic = ' '.split(phrase)
     elif isinstance(phrase, string_types):
@@ -23,10 +23,10 @@ def electrum_bin_extract_seed(phrase, password=''):
     return rootseed
 
 def electrum_extract_seed(phrase, password=''):
-    return safe_hexlify(electrum_bin_extract_seed(phrase, password=''))
+    return safe_hexlify(bin_electrum_extract_seed(phrase, password=''))
 
 def electrum_get_mprivkey(mnemonic, password=''):
-    return bip32_master_key(electrum_bin_extract_seed(mnemonic, password=''))
+    return bip32_master_key(bin_electrum_extract_seed(mnemonic, password=''))
 
 def electrum_stretch(seed):
     return slowsha(seed)
