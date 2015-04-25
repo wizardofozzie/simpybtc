@@ -32,7 +32,7 @@ def bip39_hex_to_mnemonic(hexv):
     'turtle front uncle idea crush write shrug there lottery flower risk shell'
     """
 
-    if isinstance(hexv, (bytes, str)) and re.match('^[0-9a-fA-F]*$', hexv):
+    if isinstance(hexv, string_types) and re.match('^[0-9a-fA-F]*$', from_bytes_to_string(hexv)):
         hexv = from_string_to_bytes(hexv)
     else:
         raise TypeError("Enter a hex seed!")
@@ -113,6 +113,6 @@ def bip39_generate(bits=128):
     """Generates a tuple of (hex seed, mnemonic)"""
     if bits % 32:
         raise Exception('Should be divisible by 32, but is .. %d' % bits)
-    data = hexlify(random_string(bits // 8))
+    data = safe_hexlify(random_string(bits // 8))
     return (data, bip39_hex_to_mnemonic(data))
 
