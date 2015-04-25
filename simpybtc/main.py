@@ -569,10 +569,9 @@ def bin_pbkdf2(password, salt, iters, keylen, digestmod):
             T = bytearray(x ^ y for x, y in zip(T, U))
         key += T
         i += 1
-    return key[:keylen]
+    return bytes(key[:keylen])
 
 def pbkdf2(password, salt=None, keylen=64):
     if salt is None: salt = b''
-    p = pbkdf_two(from_string_to_bytes(password), from_string_to_bytes(password))
-    #p = bin_pbkdf2(from_string_to_bytes(password), from_string_to_bytes(password))
-    return safe_hexlify(p)
+    b = bin_pbkdf2(from_string_to_bytes(password), from_string_to_bytes(password), 2048, keylen, hashlib.sha512)
+    return safe_hexlify(b)
