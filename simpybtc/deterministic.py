@@ -7,10 +7,8 @@ from simpybtc.main import *
 # Electrum wallets
 
 # Takes Electrum v2.0 13 word mnemonic string and returns seed. Only works on English for now
-def electrum_bin_extract_seed(phrase, password=''):
-    if isinstance(phrase, list):
-        mnemonic = ' '.split(phrase)
-    elif isinstance(phrase, string_types):
+def bin_electrum_extract_seed(phrase, password=''):
+    if isinstance(phrase, string_types):
         try:
             mnemonic = ' '.join(phrase.lower().strip().split())
         except Exception as e:
@@ -18,21 +16,20 @@ def electrum_bin_extract_seed(phrase, password=''):
     else:
         raise TypeError
     mnemonic, password = map(from_string_to_bytes, (phrase, password))
-    rootseed = pbkdf2(mnemonic, (b'electrum' + password))
-    assert len(rootseed) == 64
+    rootseed = pbkdf2(mnemonic, b'electrum' + password)
+    #assert len(rootseed) == 64
     return rootseed
 
 def electrum_extract_seed(phrase, password=''):
-    return safe_hexlify(electrum_bin_extract_seed(phrase, password=''))
+    return safe_hexlify(bin_electrum_extract_seed(phrase, password=''))
 
 def electrum_get_mprivkey(mnemonic, password=''):
-    return bip32_master_key(electrum_bin_extract_seed(mnemonic, password=''))
+    return bip32_master_key(bin_electrum_extract_seed(mnemonic, password=''))
 
 def electrum_stretch(seed):
     return slowsha(seed)
 
 # Accepts seed or stretched seed, returns master public key
-
 def electrum_mpk(seed):
     if len(seed) == 32:
         seed = electrum_stretch(seed)
@@ -40,8 +37,6 @@ def electrum_mpk(seed):
 
 # Accepts (seed or stretched seed), index and secondary index
 # (conventionally 0 for ordinary addresses, 1 for change) , returns privkey
-
-
 def electrum_privkey(seed, n, for_change=0):
     if len(seed) == 32:
         seed = electrum_stretch(seed)
@@ -51,8 +46,6 @@ def electrum_privkey(seed, n, for_change=0):
 
 # Accepts (seed or stretched seed or master pubkey), index and secondary index
 # (conventionally 0 for ordinary addresses, 1 for change) , returns pubkey
-
-
 def electrum_pubkey(masterkey, n, for_change=0):
     if len(masterkey) == 32:
         mpk = electrum_mpk(electrum_stretch(masterkey))
@@ -65,8 +58,6 @@ def electrum_pubkey(masterkey, n, for_change=0):
     return add_pubkeys('04'+mpk, privtopub(offset))
 
 # seed/stretched seed/pubkey -> address (convenience method)
-
-
 def electrum_address(masterkey, n, for_change=0, version=0):
     return pubkey_to_address(electrum_pubkey(masterkey, n, for_change), version)
 
@@ -87,7 +78,6 @@ PRIVATE = [MAINNET_PRIVATE, TESTNET_PRIVATE]
 PUBLIC = [MAINNET_PUBLIC, TESTNET_PUBLIC]
 
 # BIP32 child key derivation
-
 def raw_bip32_ckd(rawtuple, i):
     vbytes, depth, fingerprint, oldi, chaincode, key = rawtuple
     i = int(i)

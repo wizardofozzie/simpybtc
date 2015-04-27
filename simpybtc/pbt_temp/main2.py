@@ -1,7 +1,4 @@
 #!/usr/bin/python
-#from .py2specials import *
-#from .py3specials import *
-from pyspecials import *
 import binascii
 import hashlib
 import re
@@ -11,6 +8,7 @@ import time
 import random
 import hmac
 
+from simpybtc.py3specials import *
 from simpybtc.ripemd import *
 
 
@@ -424,13 +422,13 @@ def electrum_sig_hash(message):
 
 def random_key():
     # Gotta be secure after that java.SecureRandom fiasco...
-    entropy = from_string_to_bytes(
-        random_string(32) + str(random.randrange(2**256)) \
+    entropy = from_string_to_bytes(random_string(32) \
+        + str(random.randrange(2**256)) \
         + str(int(time.time() * 1000000)))
     return sha256(entropy)
 
 
-def random_electrum_seed(version=1):
+def random_electrum_seed():
     entropy = from_string_to_bytes(
         bytes_to_hex_string(os.urandom(32)) \
         + str(random.randrange(2**256)) \
@@ -556,7 +554,7 @@ def ecdsa_recover(msg, sig):
 
 # A simple implementation of Pbkdf2 using stock python modules.
 # Modifications based on https://matt.ucc.asn.au/src/pbkdf2.py
-def bin_pbkdf2(password, salt, iters, keylen, digestmod):
+def bin_pbkdf2(password, salt, iters, keylen, digestmod):    
     h = hmac.new(password, digestmod=digestmod)
     def prf(data):
         hm = h.copy()
@@ -571,17 +569,10 @@ def bin_pbkdf2(password, salt, iters, keylen, digestmod):
             T = bytearray(x ^ y for x, y in zip(T, U))
         key += T
         i += 1
-    return bytes(key[:keylen])  # convert bytearray => bytes
+    return key[:keylen]
 
-def pbkdf2(passphrase, salt=b'', iters=2048, keylen=64, digestmod=hashlib.sha512):
-    bx = lambda x: x if isinstance(x, bytes) else bytes(x, 'utf-8')
-    passphrase, salt = map(bx, (passphrase, salt))
-    return safe_hexlify(bin_pbkdf2(password=passphrase, salt=salt, iters=2048, keylen=64, digestmod=hashlib.sha512))
-
-# Easy pbkdf2 (takes strings/bytes)
-# def pbkdf_two(passphrase, salt=None):
-#     if salt is None: salt = from_string_to_bytes('')
-#     b = bin_pbkdf2(password=passphrase, salt=salt, iters=2048, keylen=64, digestmod=hashlib.sha512)
-#     #p = bin_pbkdf2(from_string_to_bytes(password), from_string_to_bytes(salt))
-#     #return safe_hexlify(p)
-#     return binascii.hexlify(b)
+def pbkdf2(password, salt=None, keylen=64):
+    if salt is None: salt = b''
+    p = pbkdf_two(from_string_to_bytes(password), from_string_to_bytes(password))
+    #p = bin_pbkdf2(from_string_to_bytes(password), from_string_to_bytes(password))
+    return safe_hexlify(p)

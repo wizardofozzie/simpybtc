@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import os
-PTH = r"b:\pybtc\simpybitcointools\SIMpybitcoin"
+PTH = r"b:\pybtc\simpybitcointools\SIMpybtc"
 try:
     os.chdir(PTH)
     from simpybtc import *

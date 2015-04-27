@@ -1,6 +1,5 @@
 #!/usr/bin/python
 from binascii import hexlify, unhexlify
-
 from simpybtc.bci import make_request
 from simpybtc.main import *    #https://gist.github.com/anonymous/17b0bad3aa926609096a
 
@@ -9,11 +8,17 @@ from simpybtc.main import *    #https://gist.github.com/anonymous/17b0bad3aa9266
 try:
     # https://github.com/bitcoin/bips/blob/master/bip-0039/english.txt
     try:
-        BIP39WORDS = BIP0039_ENG_WORDLIST = make_request(
+        BIP39WORDS = make_request(
             "https://raw.githubusercontent.com/bitcoin/bips/master/bip-0039/english.txt").decode('utf-8').split('\n')
-        assert len(BIP0039_ENG_WORDLIST) == 2048
+        assert len(BIP39WORDS) == 2048
     except:
-        raise IOError("BIP39 Word List not imported!")
+        fo = open('bip39_english.txt', 'r')
+        f = fo.readlines()
+        f = map(lambda x: str(x).replace('\n',''), f)
+        f.pop(-1) if f[-1] == '' else None
+        BIP39WORDS = f[:]
+        assert len(BIP39WORDS) == 2048
+
 except:
     raise IOError("Cannot get BIP39 word list")
 

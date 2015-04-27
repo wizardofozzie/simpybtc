@@ -1,3 +1,4 @@
+from simpybtc.main import *
 from simpybtc.transaction import *
 from simpybtc.bci import *
 from simpybtc.deterministic import *
@@ -26,10 +27,12 @@ def sendmultitx(frm, tovalues, fee=10000, **kwargs):
     return pushtx(tx2, **kwargs)
 
 
+
 # Takes address, address, value (satoshis), fee(satoshis)
 def preparetx(frm, to, value, fee=10000, **kwargs):
     tovalues = to + ":" + str(value)
     return preparemultitx(frm, tovalues, fee, **kwargs)
+
 
 
 # Takes address, address:value, address:value ... (satoshis), fee(satoshis)
@@ -47,8 +50,11 @@ def preparemultitx(frm, *args, **kwargs):
     return mksend(*argz)
 
 
+
 # BIP32 hierarchical deterministic multisig script
 def bip32_hdm_script(*args):
+    # args = [xprvs], req_sigs, [bip32_path] eg [xprv1, xprv2], 2, [1,2,3]
+    # args = xprvs, bip32_path
     if len(args) == 3:
         keys, req, path = args
     else:
@@ -62,8 +68,10 @@ def bip32_hdm_script(*args):
     return mk_multisig_script(pubs, req)
 
 
+
 # BIP32 hierarchical deterministic multisig address
 def bip32_hdm_addr(*args):
+    # args = [xprvs], req_sigs, [bip32_path]  or xprvs, path
     return scriptaddr(bip32_hdm_script(*args))
 
 
