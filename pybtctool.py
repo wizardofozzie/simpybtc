@@ -1,9 +1,9 @@
 #!/usr/bin/python
 import os
-PTH = r"b:\pybtc\simpybitcointools\SIMpybtc"
+PTH = r"b:\pybtc\simpybitcointools\sbtc"
 try:
     os.chdir(PTH)
-    from simpybtc import *
+    from sbtc import *
 except:
     from bitcoin import *
 

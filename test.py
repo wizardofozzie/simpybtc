@@ -1,7 +1,7 @@
 import unittest
 
-import simpybtc.ripemd as ripemd
-from simpybtc import *
+import sbtc.ripemd as ripemd
+from sbtc import *
 
 
 class TestECCArithmetic(unittest.TestCase):

@@ -1,7 +1,7 @@
 import sys
 import unittest
 
-import simpybtc as bc
+import sbtc as bc
 
 
 class TestStealth(unittest.TestCase):

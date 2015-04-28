@@ -1,8 +1,8 @@
 Metadata-Version: 1.0
-Name: simpybtc
+Name: sbtc
 Version: 1.1.30
 Summary: Python Bitcoin Tools
-Home-page: http://github.com/simcity4242/simpybtc
+Home-page: http://github.com/simcity4242/sbtc
 Author: Vitalik Buterin
 Author-email: vbuterin@gmail.com
 License: UNKNOWN
