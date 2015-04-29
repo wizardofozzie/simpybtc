@@ -1,8 +1,8 @@
-from sbtc.main import *
-from sbtc.transaction import *
-from sbtc.bci import *
-from sbtc.deterministic import *
-from sbtc.blocks import *
+from simpybtc.main import *
+from simpybtc.transaction import *
+from simpybtc.bci import *
+from simpybtc.deterministic import *
+from simpybtc.blocks import *
 
 
 # Takes privkey, address, value (satoshis), fee (satoshis)

@@ -2,7 +2,7 @@
 import copy
 from _functools import reduce
 
-from sbtc.main import *
+from simpybtc.main import *
 
 
 ### Hex to bin converter and vice versa for objects

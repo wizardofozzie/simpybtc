@@ -1,4 +1,4 @@
-from sbtc.main import *
+from simpybtc.main import *
 
 
 def serialize_header(inp):

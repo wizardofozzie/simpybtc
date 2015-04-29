@@ -1,5 +1,5 @@
 # Shared secrets and uncovering pay keys
-from sbtc import main
+from simpybtc import main
 
 
 def shared_secret_sender(scan_pubkey, ephem_privkey):

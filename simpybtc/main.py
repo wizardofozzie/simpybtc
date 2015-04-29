@@ -1,7 +1,13 @@
 #!/usr/bin/python
-#from .py2specials import *
-#from .py3specials import *
-from pyspecials import *
+import __future__
+try:
+    try:
+        from .pyspecials import *
+    except:
+        from pyspecials import *
+except:
+    from .py2specials import *
+    from .py3specials import *
 import binascii
 import hashlib
 import re
@@ -10,9 +16,12 @@ import base64
 import time
 import random
 import hmac
+import struct
 
 from simpybtc.ripemd import *
 
+global is_python2
+is_python2 = sys.version_info.major == 2
 
 # Elliptic curve parameters (secp256k1)
 P = 2**256 - 2**32 - 977
