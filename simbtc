@@ -1,14 +1,16 @@
 #!/usr/bin/python
-import os
-PTH = r"b:\pybtc\simpybitcointools\sbtc"
+import __future__
+import os, sys
+PTH = ''
 try:
-    os.chdir(PTH)
-    from sbtc import *
+    PTH = str(os.path.dirname(os.path.abspath('__file__')))
+    from bitcoin import *
 except:
+    os.chdir(r"b:/pybtc/simpybtc")
     from bitcoin import *
 
 if len(sys.argv) == 1:
-    print "pybtctool <command> <arg1> <arg2> ..."
+    print "bitcoin <command> <arg1> <arg2> ..."
 else:
     cmdargs, preargs, kwargs = [], [], {}
     i = 2
