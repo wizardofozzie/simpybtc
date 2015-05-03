@@ -1,0 +1,47 @@
+<NotepadPlus>
+    <Project name="simpybtc(desktop)">
+        <Folder name="simpybtc">
+            <Folder name="pbt_temp">
+                <File name="simpybtc\pbt_temp\bip39_test_vectors.json" />
+                <File name="simpybtc\pbt_temp\deterministic.py" />
+                <File name="simpybtc\pbt_temp\main.py" />
+                <File name="simpybtc\pbt_temp\main2.py" />
+                <File name="simpybtc\pbt_temp\mnemonic.py" />
+                <File name="simpybtc\pbt_temp\mnemonic2.py" />
+                <File name="simpybtc\pbt_temp\pbkdf_two_drafts.py" />
+                <File name="simpybtc\pbt_temp\pyspecials.bak" />
+                <File name="simpybtc\pbt_temp\pyspecials.py" />
+                <File name="simpybtc\pbt_temp\__init__.py" />
+            </Folder>
+            <File name="simpybtc\bci.py" />
+            <File name="simpybtc\bip39_english.txt" />
+            <File name="simpybtc\blocks.py" />
+            <File name="simpybtc\composite.py" />
+            <File name="simpybtc\deterministic.py" />
+            <File name="simpybtc\main.py" />
+            <File name="simpybtc\mnemonic.py" />
+            <File name="simpybtc\py2specials.py" />
+            <File name="simpybtc\py3specials.py" />
+            <File name="simpybtc\pyspecials.py" />
+            <File name="simpybtc\pyspecials.py.bak" />
+            <File name="simpybtc\ripemd.py" />
+            <File name="simpybtc\simpybtc" />
+            <File name="simpybtc\stealth.py" />
+            <File name="simpybtc\transaction.py" />
+            <File name="simpybtc\__init__.py" />
+        </Folder>
+        <File name=".gitattributes" />
+        <File name=".gitignore" />
+        <File name="LICENSE" />
+        <File name="MANIFEST.in" />
+        <File name="PKG-INFO" />
+        <File name="pybtctool" />
+        <File name="README.md" />
+        <File name="README.txt" />
+        <File name="setup.cfg" />
+        <File name="setup.py" />
+        <File name="simpybtc.py" />
+        <File name="test.py" />
+        <File name="test_stealth.py" />
+    </Project>
+</NotepadPlus>
