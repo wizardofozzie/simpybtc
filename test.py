@@ -1,7 +1,7 @@
 import unittest
 
-import sbtc.ripemd as ripemd
-from sbtc import *
+import bitcoin.ripemd as ripemd
+from bitcoin import *
 
 
 class TestECCArithmetic(unittest.TestCase):
