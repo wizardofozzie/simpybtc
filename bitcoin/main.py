@@ -1,13 +1,5 @@
 #!/usr/bin/python
-import __future__
-try:
-    try:
-        from .pyspecials import *
-    except:
-        from pyspecials import *
-except:
-    from .py2specials import *
-    from .py3specials import *
+from .pyspecials import *
 import binascii
 import hashlib
 import re
@@ -44,6 +36,8 @@ def getG():
 
 # Extended Euclidean Algorithm
 def inv(a, n):
+    if a == 0:
+        return 0
     lm, hm = 1, 0
     low, high = a % n, n
     while low > 1:
@@ -539,7 +533,7 @@ def ecdsa_recover(msg, sig):
 # Modifications based on https://matt.ucc.asn.au/src/pbkdf2.py
 def bin_pbkdf2(password, salt, iters, keylen, digestmod):
     h = hmac.new(password, digestmod=digestmod)
-    def prf(data): # prf = pseudo random function
+    def prf(data):
         hm = h.copy()
         hm.update(data)
         return bytearray(hm.digest())
@@ -552,20 +546,16 @@ def bin_pbkdf2(password, salt, iters, keylen, digestmod):
             T = bytearray(x ^ y for x, y in zip(T, U))
         key += T
         i += 1
-    return bytes(key[:keylen])  # convert bytearray => bytes
+    return bytes(key[:keylen])
 
-def pbkdf2(passphrase, salt=None, iters=2048, keylen=64, digestmod=hashlib.sha512):
-    if salt is None: salt = ''
+def pbkdf2(password, salt, iters=2048, keylen=64, digestmod=hashlib.sha512):
+    if salt is None or len(salt) == 0: salt = b''
     bx = lambda x: x if isinstance(x, bytes) else bytes(x, 'utf-8')
-    passphrase, salt = map(bx, (passphrase, salt))
-    return safe_hexlify(bin_pbkdf2(password=passphrase, salt=salt, iters=2048, keylen=64, digestmod=hashlib.sha512))
+    password, salt = map(bx, (password, salt))
+    return safe_hexlify(bin_pbkdf2(password=password, salt=salt, iters=2048, keylen=64, digestmod=hashlib.sha512))
 
 # Easy pbkdf2 (takes strings/bytes)
-# def pbkdf_two(passphrase, salt=None):
-#     if salt is None: salt = from_string_to_bytes('')
-#     b = bin_pbkdf2(password=passphrase, salt=salt, iters=2048, keylen=64, digestmod=hashlib.sha512)
-#     #p = bin_pbkdf2(from_string_to_bytes(password), from_string_to_bytes(salt))
-#     #return safe_hexlify(p)
-#     return binascii.hexlify(b)
-
-# pbkdf22 = lambda password, salt, iters, keylen: bin_pbkdf2(password, salt, iter_count, key, digestmod=hashlib.sha512)
+def hmac_sha512(key, msg=None):
+    if msg is None: msg = b''
+    b = bin_pbkdf2(password=key, salt=msg, iters=2048, keylen=64, digestmod=hashlib.sha512)
+    return safe_hexlify(b)

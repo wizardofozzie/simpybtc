@@ -12,9 +12,10 @@ def send(frm, to, value, fee=10000):
 
 # Takes privkey, "address1:value1,address2:value2" (satoshis), fee (satoshis)
 def sendmultitx(frm, tovalues, fee=10000, **kwargs):
+    tv, fee = kwargs[:-1], int(kwargs[-1])
     outs = []
     outvalue = 0
-    tv = tovalues.split(",")
+
     for a in tv:
         outs.append(a)
         outvalue += int(a.split(":")[1])

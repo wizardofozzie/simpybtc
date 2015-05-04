@@ -417,37 +417,35 @@ def RMD160Final(ctx):
 #        new('').hexdigest()
 
 
-# PBKDF2: a simple implementation using stock python modules.
-# Modifications based on https://matt.ucc.asn.au/src/pbkdf2.py
-def bin_pbkdf2(password, salt, iters, keylen, digestmod):
-    h = hmac.new(password, digestmod=digestmod)
-    def prf(data): # prf = pseudo random function
-        hm = h.copy()
-        hm.update(data)
-        return bytearray(hm.digest())
-    key = bytearray()
-    i = 1
-    while len(key) < keylen:
-        T = U = prf(salt + struct.pack('>i', i))
-        for _ in range(iters - 1):
-            U = prf(U)
-            T = bytearray(x ^ y for x, y in zip(T, U))
-        key += T
-        i += 1
-    return bytes(key[:keylen])  # convert bytearray => bytes
-
-def pbkdf2(passphrase, salt=None, iters=2048, keylen=64, digestmod=hashlib.sha512):
-    if salt is None: salt = ''
-    bx = lambda x: x if isinstance(x, bytes) else bytes(x, 'utf-8')
-    passphrase, salt = map(bx, (passphrase, salt))
-    return safe_hexlify(bin_pbkdf2(password=passphrase, salt=salt, iters=2048, keylen=64, digestmod=hashlib.sha512))
-
-# Easy pbkdf2 (takes strings/bytes)
-def hmac_sha512(key, msg=None):
-    if msg is None: msg = b''
-    b = bin_pbkdf2(password=key, salt=msg, iters=2048, keylen=64, digestmod=hashlib.sha512)
-    #p = bin_pbkdf2(from_string_to_bytes(password), from_string_to_bytes(salt))
-    #return safe_hexlify(p)
-    return binascii.hexlify(b)
+# # PBKDF2: a simple implementation using stock python modules.
+# # Modifications based on https://matt.ucc.asn.au/src/pbkdf2.py
+# def bin_pbkdf2(password, salt, iters, keylen, digestmod):
+#     h = hmac.new(password, digestmod=digestmod)
+#     def prf(data): # prf = pseudo random function
+#         hm = h.copy()
+#         hm.update(data)
+#         return bytearray(hm.digest())
+#     key = bytearray()
+#     i = 1
+#     while len(key) < keylen:
+#         T = U = prf(salt + struct.pack('>i', i))
+#         for _ in range(iters - 1):
+#             U = prf(U)
+#             T = bytearray(x ^ y for x, y in zip(T, U))
+#         key += T
+#         i += 1
+#     return bytes(key[:keylen])  # convert bytearray => bytes
+#
+# def pbkdf2(passphrase, salt=None, iters=2048, keylen=64, digestmod=hashlib.sha512):
+#     if salt is None: salt = ''
+#     bx = lambda x: x if isinstance(x, bytes) else bytes(x, 'utf-8')
+#     passphrase, salt = map(bx, (passphrase, salt))
+#     return safe_hexlify(bin_pbkdf2(password=passphrase, salt=salt, iters=2048, keylen=64, digestmod=hashlib.sha512))
+#
+# # Easy pbkdf2 (takes strings/bytes)
+# def hmac_sha512(key, msg=None):
+#     if msg is None: msg = b''
+#     b = bin_pbkdf2(password=key, salt=msg, iters=2048, keylen=64, digestmod=hashlib.sha512)
+#     return safe_hexlify(b)
 
 # pbkdf22 = lambda password, salt, iters, keylen: bin_pbkdf2(password, salt, iter_count, key, digestmod=hashlib.sha512)

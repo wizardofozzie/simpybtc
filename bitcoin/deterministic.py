@@ -1,6 +1,7 @@
 import hmac
 import hashlib
 from bitcoin.main import *
+from bitcoin.pyspecials import *
 
 
 
@@ -16,8 +17,9 @@ def bin_electrum_extract_seed(phrase, password=''):
     else:
         raise TypeError
     mnemonic = from_string_to_bytes(phrase)
-    pwd = b'electrum'+from_string_to_bytes(password)
-    rootseed = bin_pbkdf2(password=mnemonic, salt=pwd, iters=2048, keylen=64, digestmod=hashlib.sha512)
+    pwd = from_string_to_bytes("electrum"
+                               "{}".format(from_string_to_bytes(password)))
+    rootseed = hmac_sha512(key=mnemonic, msg=pwd)
     assert len(rootseed) == 64
     return rootseed
 
@@ -198,7 +200,7 @@ def coinvault_priv_to_bip32(*args):
 
 
 def bip32_descend(*args):
-    if len(args) == 2:
+    if len(args) == 2 and isinstance(args[1], list):
         key, path = args
     else:
         key, path = args[0], map(int, args[1:])
