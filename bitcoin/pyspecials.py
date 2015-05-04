@@ -1,51 +1,52 @@
-import os, sys, re, binascii, hashlib
-#from bitcoin.main import *
+import sys
+import re
+import binascii
+import os
+import hashlib
 
-is_python2 = bytes == str
 
+if sys.version_info.major == 2:
+    is_python2 = bytes == str
 
-st = lambda u: str(u) if is_python2 else str(u, 'utf-8')
-by = lambda v: bytes(v) if is_python2 else bytes(v, 'utf-8')
+    st = lambda u: str(u) if is_python2 else str(u, 'utf-8')
+    by = lambda v: bytes(v) if is_python2 else bytes(v, 'utf-8')
 
-string_types = (str, unicode) if is_python2 else (str)
-string_or_bytes_types = string_types if is_python2 else (str, bytes)
-bytestring_types = bytearray if is_python2 else (bytes, bytearray)
-int_types = (int, float, long) if is_python2 else (int, float)
+    string_types = (str, unicode) if is_python2 else (str)
+    string_or_bytes_types = string_types if is_python2 else (str, bytes)
+    bytestring_types = bytearray if is_python2 else (bytes, bytearray)
+    int_types = (int, float, long) if is_python2 else (int, float)
 
-# Base switching
-code_strings = {
-    2: '01',
-    10: '0123456789',
-    16: '0123456789abcdef',
-    32: 'abcdefghijklmnopqrstuvwxyz234567',
-    58: '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz',
-    #128: ''.join([chr(x) for x in range(128)]),
-    256: ''.join([chr(x) for x in range(256)])
-}
+    # Base switching
+    code_strings = {
+        2: '01',
+        10: '0123456789',
+        16: '0123456789abcdef',
+        32: 'abcdefghijklmnopqrstuvwxyz234567',
+        58: '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz',
+        #128: ''.join([chr(x) for x in range(128)]),
+        256: ''.join([chr(x) for x in range(256)])
+    }
 
-def bin_dbl_sha256(s):
-    bytes_to_hash = from_string_to_bytes(s)
-    return hashlib.sha256(hashlib.sha256(bytes_to_hash).digest()).digest()
+    def bin_dbl_sha256(s):
+        bytes_to_hash = from_string_to_bytes(s)
+        return hashlib.sha256(hashlib.sha256(bytes_to_hash).digest()).digest()
 
-def lpad(msg, symbol, length):
-    if len(msg) >= length:
-        return msg
-    return symbol * (length - len(msg)) + msg
+    def lpad(msg, symbol, length):
+        if len(msg) >= length:
+            return msg
+        return symbol * (length - len(msg)) + msg
 
-def get_code_string(base):
-    if base in code_strings:
-        return code_strings[base]
-    else:
-        raise ValueError("Invalid base!")
+    def get_code_string(base):
+        if base in code_strings:
+            return code_strings[base]
+        else:
+            raise ValueError("Invalid base!")
 
-def changebase(string, frm, to, minlen=0):
-    if frm == to:
-        return lpad(string, get_code_string(frm)[0], minlen)
-    return encode(decode(string, frm), to, minlen)
+    def changebase(string, frm, to, minlen=0):
+        if frm == to:
+            return lpad(string, get_code_string(frm)[0], minlen)
+        return encode(decode(string, frm), to, minlen)
 
-#   PYTHON 2 FUNCTIONS
-#
-if is_python2:
     def bin_to_b58check(inp, magicbyte=0):
         inp_fmtd = chr(int(magicbyte)) + inp
         leadingzbytes = len(re.match('^\x00*', inp_fmtd).group(0))
@@ -104,7 +105,49 @@ if is_python2:
 
 #   PYTHON 3
 #
-elif not is_python2:
+elif sys.version_info.major == 3:
+    is_python2 = bytes == str
+
+    st = lambda u: str(u) if is_python2 else str(u, 'utf-8')
+    by = lambda v: bytes(v) if is_python2 else bytes(v, 'utf-8')
+
+    string_types = (str, unicode) if is_python2 else (str)
+    string_or_bytes_types = string_types if is_python2 else (str, bytes)
+    bytestring_types = bytearray if is_python2 else (bytes, bytearray)
+    int_types = (int, float, long) if is_python2 else (int, float)
+
+    # Base switching
+    code_strings = {
+        2: '01',
+        10: '0123456789',
+        16: '0123456789abcdef',
+        32: 'abcdefghijklmnopqrstuvwxyz234567',
+        58: '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz',
+        #128: ''.join([chr(x) for x in range(128)]),
+        256: ''.join([chr(x) for x in range(256)])
+    }
+
+    def bin_dbl_sha256(s):
+        bytes_to_hash = from_string_to_bytes(s)
+        return hashlib.sha256(hashlib.sha256(bytes_to_hash).digest()).digest()
+
+    def lpad(msg, symbol, length):
+        if len(msg) >= length:
+            return msg
+        return symbol * (length - len(msg)) + msg
+
+    def get_code_string(base):
+        if base in code_strings:
+            return code_strings[base]
+        else:
+            raise ValueError("Invalid base!")
+
+    def changebase(string, frm, to, minlen=0):
+        if frm == to:
+            return lpad(string, get_code_string(frm)[0], minlen)
+        return encode(decode(string, frm), to, minlen)
+
+
     def bin_to_b58check(inp, magicbyte=0):
         inp_fmtd = from_int_to_byte(int(magicbyte))+inp
         leadingzbytes = 0
@@ -123,7 +166,7 @@ elif not is_python2:
         if isinstance(b, str):
             return bytes.fromhex(b)
         return bytes.fromhex(b)
-        
+
     safe_unhexlify = safe_from_hex
 
     def from_int_representation_to_bytes(a):
@@ -145,7 +188,7 @@ elif not is_python2:
 
     def safe_hexlify(a):
         return st(binascii.hexlify(a))
-        
+
     def encode(val, base, minlen=0):
         base, minlen = int(base), int(minlen)
         code_string = get_code_string(base)

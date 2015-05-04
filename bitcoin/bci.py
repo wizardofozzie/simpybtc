@@ -1,7 +1,10 @@
 #!/usr/bin/python
-import json, re
+import json
+import re
 import random
 import sys
+import binascii
+
 try:
     from urllib.request import build_opener
 except:
@@ -362,3 +365,10 @@ def get_txs_in_block(inp):
 def get_block_height(txhash):
     j = json.loads(make_request('https://blockchain.info/rawtx/'+txhash))
     return j['block_height']
+
+def get_block_coinbase(inp):
+    j = _get_block(inp)
+    cb = binascii.unhexlify( str(j['tx'][0]['inputs'][0]['script']))
+    asciichars = ''.join(map(chr, list(range(32,126))))
+    cbtext = ''.join(map(chr, filter(lambda x: chr(x) in asciichars, bytearray(cb))))
+    return cbtext if not '' else None

@@ -1,7 +1,9 @@
 import hmac
 import hashlib
+
 from bitcoin.main import *
-from bitcoin.pyspecials import *
+
+#from bitcoin.pyspecials import *
 
 
 

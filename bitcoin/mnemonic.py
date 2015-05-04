@@ -1,39 +1,9 @@
 #!/usr/bin/python
-import __future__
-import os, sys, inspect
 from bitcoin.main import *
-from bitcoin.bci import make_request
-from pyspecials import *
+#from pyspecials import *
+from bitcoin._bip39wordlist import BIP0039_WORDLIST as BIP39WORDS
+from bitcoin._electrum1wordlist import ELECTRUM_V1_WORDS as ELECTRUM1WORDS
 
-# get wordlists
-try:
-    # https://github.com/bitcoin/bips/blob/master/bip-0039/english.txt
-    try:
-        BIP39WORDS = make_request(
-            "https://raw.githubusercontent.com/bitcoin/bips/master/bip-0039/english.txt").decode('utf-8').strip().split('\n')
-        assert len(BIP39WORDS) == 2048
-    except:
-        with open('_bip39_english.txt', 'r') as fo:
-            f = fo.readlines()
-            f = map(lambda x: str(x).replace('\n',''), f)
-            f.pop(-1) if f[-1] == '' else None
-            BIP39WORDS = f[:]
-        assert len(BIP39WORDS) == 2048
-except:
-    raise IOError("Cannot get BIP39 word list")
-try:
-    try:
-        ELECTRUM1WORDS = make_request("https://gist.githubusercontent.com/anonymous/f58f57780245db3cafc4/raw/1b5a9e81c0a356373e9e13aa720baef89d8fa856/electrum1_english_words").decode('utf-8').strip().split()
-        assert len(ELECTRUM1WORDS) == 1626
-    except:
-        with open('_electrum_v1_english.txt', 'r') as fo:
-            f = fo.readlines()
-            f = map(lambda x: str(x).replace('\n',''), f)
-            f.pop(-1) if f[-1] == '' else None
-            ELECTRUM1WORDS = f[:]
-        assert len(ELECTRUM1WORDS) == 1626
-except:
-    raise IOError("Cannot get Electrum 1.x word list")
 
 def bip39_hex_to_mnemonic(hexvalue):
     """

@@ -1,13 +1,62 @@
-import sys, re
+import sys
+import re
 import binascii
 import os
 import hashlib
 
+#is_python2 = bytes == str
 
+# st = lambda u: str(u) if is_python2 else str(u, 'utf-8')
+# by = lambda v: bytes(v) if is_python2 else bytes(v, 'utf-8')
+#
+# string_types = (str, unicode) if is_python2 else (str)
+# string_or_bytes_types = string_types if is_python2 else (str, bytes)
+# bytestring_types = bytearray if is_python2 else (bytes, bytearray)
+# int_types = (int, float, long) if is_python2 else (int, float)
+#
+# # Base switching
+# code_strings = {
+#     2: '01',
+#     10: '0123456789',
+#     16: '0123456789abcdef',
+#     32: 'abcdefghijklmnopqrstuvwxyz234567',
+#     58: '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz',
+#     #128: ''.join([chr(x) for x in range(128)]),
+#     256: ''.join([chr(x) for x in range(256)])
+# }
+#
+# def bin_dbl_sha256(s):
+#     bytes_to_hash = from_string_to_bytes(s)
+#     return hashlib.sha256(hashlib.sha256(bytes_to_hash).digest()).digest()
+#
+# def lpad(msg, symbol, length):
+#     if len(msg) >= length:
+#         return msg
+#     return symbol * (length - len(msg)) + msg
+#
+# def get_code_string(base):
+#     if base in code_strings:
+#         return code_strings[base]
+#     else:
+#         raise ValueError("Invalid base!")
+#
+# def changebase(string, frm, to, minlen=0):
+#     if frm == to:
+#         return lpad(string, get_code_string(frm)[0], minlen)
+#     return encode(decode(string, frm), to, minlen)
+
+#   PYTHON 2 FUNCTIONS
+#
 if sys.version_info.major == 2:
-    string_types = (str, unicode)
-    string_or_bytes_types = string_types
-    int_types = (int, float, long)
+    is_python2 = bytes == str
+
+    st = lambda u: str(u) if is_python2 else str(u, 'utf-8')
+    by = lambda v: bytes(v) if is_python2 else bytes(v, 'utf-8')
+
+    string_types = (str, unicode) if is_python2 else (str)
+    string_or_bytes_types = string_types if is_python2 else (str, bytes)
+    bytestring_types = bytearray if is_python2 else (bytes, bytearray)
+    int_types = (int, float, long) if is_python2 else (int, float)
 
     # Base switching
     code_strings = {
@@ -16,6 +65,7 @@ if sys.version_info.major == 2:
         16: '0123456789abcdef',
         32: 'abcdefghijklmnopqrstuvwxyz234567',
         58: '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz',
+        #128: ''.join([chr(x) for x in range(128)]),
         256: ''.join([chr(x) for x in range(256)])
     }
 
@@ -44,13 +94,15 @@ if sys.version_info.major == 2:
         leadingzbytes = len(re.match('^\x00*', inp_fmtd).group(0))
         checksum = bin_dbl_sha256(inp_fmtd)[:4]
         return '1' * leadingzbytes + changebase(inp_fmtd+checksum, 256, 58)
-
+        
     def bytes_to_hex_string(b):
         return b.encode('hex')
 
     def safe_from_hex(s):
         return s.decode('hex')
 
+    safe_unhexlify = safe_from_hex
+        
     def from_int_representation_to_bytes(a):
         return str(a)
 
@@ -60,12 +112,12 @@ if sys.version_info.major == 2:
     def from_byte_to_int(a):
         return ord(a)
 
-    def from_bytes_to_string(s):
-        return s
-
     def from_string_to_bytes(a):
         return a
 
+    def from_bytestring_to_string(a):
+        return st(a)
+        
     def safe_hexlify(a):
         return binascii.hexlify(a)
 
@@ -93,10 +145,19 @@ if sys.version_info.major == 2:
     def random_string(x):
         return os.urandom(x)
 
-if sys.version_info.major == 3:
-    string_types = (str)
-    string_or_bytes_types = (str, bytes)
-    int_types = (int, float)
+#   PYTHON 3
+#
+elif sys.version_info.major == 3:
+    is_python2 = bytes == str
+
+    st = lambda u: str(u) if is_python2 else str(u, 'utf-8')
+    by = lambda v: bytes(v) if is_python2 else bytes(v, 'utf-8')
+
+    string_types = (str, unicode) if is_python2 else (str)
+    string_or_bytes_types = string_types if is_python2 else (str, bytes)
+    bytestring_types = bytearray if is_python2 else (bytes, bytearray)
+    int_types = (int, float, long) if is_python2 else (int, float)
+
     # Base switching
     code_strings = {
         2: '01',
@@ -104,6 +165,7 @@ if sys.version_info.major == 3:
         16: '0123456789abcdef',
         32: 'abcdefghijklmnopqrstuvwxyz234567',
         58: '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz',
+        #128: ''.join([chr(x) for x in range(128)]),
         256: ''.join([chr(x) for x in range(256)])
     }
 
@@ -127,29 +189,30 @@ if sys.version_info.major == 3:
             return lpad(string, get_code_string(frm)[0], minlen)
         return encode(decode(string, frm), to, minlen)
 
+
     def bin_to_b58check(inp, magicbyte=0):
         inp_fmtd = from_int_to_byte(int(magicbyte))+inp
-
         leadingzbytes = 0
         for x in inp_fmtd:
-            if x != 0:
-                break
+            if x != 0: break
             leadingzbytes += 1
-
         checksum = bin_dbl_sha256(inp_fmtd)[:4]
         return '1' * leadingzbytes + changebase(inp_fmtd+checksum, 256, 58)
 
     def bytes_to_hex_string(b):
         if isinstance(b, str):
             return b
-
         return ''.join('{:02x}'.format(y) for y in b)
 
-    def safe_from_hex(s):
-        return bytes.fromhex(s)
+    def safe_from_hex(b):
+        if isinstance(b, str):
+            return bytes.fromhex(b)
+        return bytes.fromhex(b)
+
+    safe_unhexlify = safe_from_hex
 
     def from_int_representation_to_bytes(a):
-        return bytes(str(a), 'utf-8')
+        return by(str(a))
 
     def from_int_to_byte(a):
         return bytes([a])
@@ -158,10 +221,15 @@ if sys.version_info.major == 3:
         return a
 
     def from_string_to_bytes(a):
-        return a if isinstance(a, bytes) else bytes(a, 'utf-8')
+        return a if isinstance(a, bytes) else by(a)
+
+    def from_bytestring_to_string(a):
+        return st(a)
+
+    from_bytes_to_string = from_bytestring_to_string
 
     def safe_hexlify(a):
-        return str(binascii.hexlify(a), 'utf-8')
+        return st(binascii.hexlify(a))
 
     def encode(val, base, minlen=0):
         base, minlen = int(base), int(minlen)
@@ -207,3 +275,6 @@ if sys.version_info.major == 3:
 
     def random_string(x):
         return str(os.urandom(x))
+
+else:
+    raise IOError

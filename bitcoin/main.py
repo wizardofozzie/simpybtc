@@ -1,5 +1,4 @@
 #!/usr/bin/python
-from pyspecials import *
 import binascii
 import hashlib
 import re
@@ -8,11 +7,10 @@ import base64
 import time
 import random
 import hmac
-import struct
 
+from .pyspecials import *
 from bitcoin.ripemd import *
 
-is_python2 = bytes == str
 
 # Elliptic curve parameters (secp256k1)
 P = 2**256 - 2**32 - 977
