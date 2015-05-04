@@ -45,7 +45,7 @@ except ImportError:
 
 import sys
 
-is_python2 = sys.version_info.major == 2
+is_python2 = bytes == str
 
 #block_size = 1
 digest_size = 20

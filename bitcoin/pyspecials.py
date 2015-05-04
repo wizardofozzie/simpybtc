@@ -1,8 +1,7 @@
 import os, sys, re, binascii, hashlib
-from bitcoin.main import *
-if sys.version_info.major == 2:
-    global is_python2
-    is_python2 = True
+#from bitcoin.main import *
+
+is_python2 = bytes == str
 
 
 st = lambda u: str(u) if is_python2 else str(u, 'utf-8')
@@ -105,7 +104,7 @@ if is_python2:
 
 #   PYTHON 3
 #
-else:
+elif not is_python2:
     def bin_to_b58check(inp, magicbyte=0):
         inp_fmtd = from_int_to_byte(int(magicbyte))+inp
         leadingzbytes = 0
@@ -192,3 +191,5 @@ else:
     def random_string(x):
         return str(os.urandom(x))
 
+else:
+    raise IOError
