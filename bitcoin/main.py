@@ -1,5 +1,5 @@
 #!/usr/bin/python
-from .pyspecials import *
+from pyspecials import *
 import binascii
 import hashlib
 import re
