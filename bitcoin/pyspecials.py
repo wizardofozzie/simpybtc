@@ -1,5 +1,5 @@
 import os, sys, re, binascii, hashlib
-from bitcoin.main import *
+#from bitcoin.main import *
 
 is_python2 = bytes == str
 
