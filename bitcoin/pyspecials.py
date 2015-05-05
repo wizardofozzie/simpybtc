@@ -1,7 +1,7 @@
 import os, sys, re, binascii, hashlib
 from bitcoin.main import *
-if sys.version_info.major == 2:
-    global is_python2
+
+if bytes == str: 
     is_python2 = True
 
 
