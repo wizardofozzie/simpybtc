@@ -1,0 +1,16 @@
+Index: ../mmgen/mmgen/mnemonic.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- ../mmgen/mmgen/mnemonic.py	(revision 4a93cdee6a10ddd69555844cd651d3fbc04332b2)
++++ ../mmgen/mmgen/mnemonic.py	(revision )
+@@ -38,7 +38,7 @@
+ def hex2mn_pad(hexnum): return len(hexnum) * 3 / 8
+ 
+ # Universal base-conversion routines:
+-def baseNtohex(base,words,wordlist,pad=0):
++def baseNtohex(base, words, wordlist, pad=0):
+ 	deconv = \
+ 		[wordlist.index(words[::-1][i])*(base**i) for i in range(len(words))]
+ 	ret = ("{:0%sx}" % pad).format(sum(deconv))

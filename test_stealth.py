@@ -1,7 +1,7 @@
 import sys
 import unittest
 
-import bitcoin as bc
+import btc as bc
 
 
 class TestStealth(unittest.TestCase):

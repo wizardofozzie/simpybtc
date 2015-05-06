@@ -4,13 +4,13 @@ import os, sys
 PTH = ''
 try:
     PTH = str(os.path.dirname(os.path.abspath('__file__')))
-    from bitcoin import *
+    from btc import *
 except:
     os.chdir(r"b:/pybtc/simpybtc")
-    from bitcoin import *
+    from btc import *
 
 if len(sys.argv) == 1:
-    print "bitcoin <command> <arg1> <arg2> ..."
+    print "btc <command> <arg1> <arg2> ..."
 else:
     cmdargs, preargs, kwargs = [], [], {}
     i = 2
