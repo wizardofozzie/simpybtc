@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../btckeysplit/.idea/btckeysplit.iml" filepath="$PROJECT_DIR$/../btckeysplit/.idea/btckeysplit.iml" />
+      <module fileurl="file://C:/python27/Lib/site-packages/pycoind/.idea/pycoind.iml" filepath="C:/python27/Lib/site-packages/pycoind/.idea/pycoind.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/simpybtc.iml" filepath="$PROJECT_DIR$/.idea/simpybtc.iml" />
     </modules>
   </component>
