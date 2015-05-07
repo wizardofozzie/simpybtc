@@ -4,52 +4,13 @@ import binascii
 import os
 import hashlib
 
-#is_python2 = bytes == str
-
-# st = lambda u: str(u) if is_python2 else str(u, 'utf-8')
-# by = lambda v: bytes(v) if is_python2 else bytes(v, 'utf-8')
-#
-# string_types = (str, unicode) if is_python2 else (str)
-# string_or_bytes_types = string_types if is_python2 else (str, bytes)
-# bytestring_types = bytearray if is_python2 else (bytes, bytearray)
-# int_types = (int, float, long) if is_python2 else (int, float)
-#
-# # Base switching
-# code_strings = {
-#     2: '01',
-#     10: '0123456789',
-#     16: '0123456789abcdef',
-#     32: 'abcdefghijklmnopqrstuvwxyz234567',
-#     58: '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz',
-#     #128: ''.join([chr(x) for x in range(128)]),
-#     256: ''.join([chr(x) for x in range(256)])
-# }
-#
-# def bin_dbl_sha256(s):
-#     bytes_to_hash = from_string_to_bytes(s)
-#     return hashlib.sha256(hashlib.sha256(bytes_to_hash).digest()).digest()
-#
-# def lpad(msg, symbol, length):
-#     if len(msg) >= length:
-#         return msg
-#     return symbol * (length - len(msg)) + msg
-#
-# def get_code_string(base):
-#     if base in code_strings:
-#         return code_strings[base]
-#     else:
-#         raise ValueError("Invalid base!")
-#
-# def changebase(string, frm, to, minlen=0):
-#     if frm == to:
-#         return lpad(string, get_code_string(frm)[0], minlen)
-#     return encode(decode(string, frm), to, minlen)
+is_python2 = str == bytes
 
 #   PYTHON 2 FUNCTIONS
 #
 if sys.version_info.major == 2:
-    is_python2 = bytes == str
-
+    
+    python2 = bytes == str
     st = lambda u: str(u) if is_python2 else str(u, 'utf-8')
     by = lambda v: bytes(v) if is_python2 else bytes(v, 'utf-8')
 
