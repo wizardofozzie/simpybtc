@@ -1,6 +1,6 @@
 #!/usr/bin/python
 from btc.main import *
-from btc.pyspecials import *
+#from btc.pyspecials import *
 
 # get wordlists
 
