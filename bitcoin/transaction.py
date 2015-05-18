@@ -488,7 +488,7 @@ def mk_opreturn(msg, rawtx=None, json=0):
         elif len(data) < 0xffffffff:
             return from_int_to_byte(78) + struct.pack('<I', len(data)) + from_string_to_bytes(data)
         else: raise Exception("Input data error. Rawtx must be hex chars" \
-                            + "0xffffffff > len(data) > 0")
+                            + "0xffffffff > len(data) >= 0")
 
     orhex = safe_hexlify(b'\x6a' + op_push(msg))
     orjson = {'script' : orhex, 'value' : 0}
