@@ -4,13 +4,10 @@ import binascii
 import os
 import hashlib
 
-is_python2 = str == bytes
 
-#   PYTHON 2 FUNCTIONS
-#
 if sys.version_info.major == 2:
-    
-    python2 = bytes == str
+    is_python2 = bytes == str
+
     st = lambda u: str(u) if is_python2 else str(u, 'utf-8')
     by = lambda v: bytes(v) if is_python2 else bytes(v, 'utf-8')
 
@@ -166,9 +163,9 @@ elif sys.version_info.major == 3:
         return ''.join('{:02x}'.format(y) for y in b)
 
     def safe_from_hex(b):
-        if isinstance(b, str):
+        if isinstance(b, string_types):
             return bytes.fromhex(b)
-        return bytes.fromhex(b)
+        return binascii.unhexlify(st(b))
 
     safe_unhexlify = safe_from_hex
 
@@ -182,10 +179,10 @@ elif sys.version_info.major == 3:
         return a
 
     def from_string_to_bytes(a):
-        return a if isinstance(a, bytes) else by(a)
+        return a if isinstance(a, bytestring_types) else by(a)
 
     def from_bytestring_to_string(a):
-        return st(a)
+        return a if isinstance(a, string_types) else st(a)
 
     from_bytes_to_string = from_bytestring_to_string
 
@@ -238,5 +235,4 @@ elif sys.version_info.major == 3:
         return str(os.urandom(x))
 
 else:
-    from btc.py2specials import *
-    from btc.py3specials import *
+    raise IOError
