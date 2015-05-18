@@ -1,13 +1,14 @@
 #!/usr/bin/python
-from btc.pyspecials import *
-import json, re
+import json
+import re
 import random
 import sys
+import binascii
 try:
     from urllib.request import build_opener
 except:
     from urllib2 import build_opener
-
+from btc.pyspecials import from_bytes_to_string, safe_hexlify, safe_unhexlify
 
 # Makes a request to a given URL (first arg) and optional params (second arg)
 def make_request(*args):
@@ -15,10 +16,10 @@ def make_request(*args):
     opener.addheaders = [('User-agent',
                           'Mozilla/5.0'+str(random.randrange(1000000)))]
     try:
-        return st(opener.open(*args).read().strip())
+        return from_bytes_to_string(opener.open(*args).read().strip())
     except Exception as e:
         try:
-            p = st(e.read().strip())
+            p = from_bytes_to_string(e.read().strip())
         except:
             p = e
         raise Exception(p)
@@ -56,7 +57,7 @@ def bci_unspent(*args):
         try:
             jsonobj = json.loads(data)
             for o in jsonobj["unspent_outputs"]:
-                h = o['tx_hash'].decode('hex')[::-1].encode('hex')
+                h = o['tx_hash_big_endian']
                 u.append({
                     "output": h+':'+str(o['tx_output_n']),
                     "value": o['value']
@@ -124,6 +125,26 @@ def helloblock_unspent(*args):
                 })
     return o
 
+# def webbtc_unspent(*args):
+#     network, addr_args = parse_addr_args(*args)
+#     if network == 'testnet':
+#         url = 'http://test.webbtc.com/address/%s.%s'
+#     elif network == 'btc':
+#         url = 'http://webbtc.com/address/%s.%s'
+#     else:
+#         raise Exception(
+#             'Unsupported network {0} for webbtc_unspent'.format(network))
+#     if len(addr_args) == 0:
+#         return []
+#     elif isinstance(addr_args[0], list):
+#         addrs = addr_args[0]
+#     else:
+#         addrs = addr_args
+#     o = []
+#     for a in addrs:
+#
+
+
 
 unspent_getters = {
     'bci': bci_unspent,
@@ -189,13 +210,13 @@ def history(*args):
 # Pushes a transaction to the network using https://blockchain.info/pushtx
 def bci_pushtx(tx):
     if not re.match('^[0-9a-fA-F]*$', tx):
-        tx = tx.encode('hex')
+        tx = safe_hexlify(tx)
     return make_request('https://blockchain.info/pushtx', 'tx='+tx)
 
 
 def eligius_pushtx(tx):
     if not re.match('^[0-9a-fA-F]*$', tx):
-        tx = tx.encode('hex')
+        tx = safe_hexlify(tx)
     s = make_request(
         'http://eligius.st/~wizkid057/newstats/pushtxn.php',
         'transaction='+tx+'&send=Push')
@@ -216,13 +237,13 @@ def blockr_pushtx(tx, network='btc'):
             'Unsupported network {0} for blockr_pushtx'.format(network))
 
     if not re.match('^[0-9a-fA-F]*$', tx):
-        tx = tx.encode('hex')
+        tx = safe_hexlify(tx)
     return make_request(blockr_url, '{"hex":"%s"}' % tx)
 
 
 def helloblock_pushtx(tx):
     if not re.match('^[0-9a-fA-F]*$', tx):
-        tx = tx.encode('hex')
+        tx = safe_hexlify(tx)
     return make_request('https://mainnet.helloblock.io/v1/transactions',
                         'rawTxHex='+tx)
 
@@ -325,8 +346,8 @@ def firstbits(address):
 
 
 def get_block_at_height(height):
-    j = json.loads(st(make_request("https://blockchain.info/block-height/" +
-                   str(height)+"?format=json")))
+    j = json.loads(make_request("https://blockchain.info/block-height/" +
+                   str(height)+"?format=json"))
     for b in j['blocks']:
         if b['main_chain'] is True:
             return b
@@ -364,10 +385,11 @@ def get_block_height(txhash):
     j = json.loads(make_request('https://blockchain.info/rawtx/'+txhash))
     return j['block_height']
 
-
 def get_block_coinbase(inp):
-    j = _get_block(inp=inp)
-    cb = binascii.unhexlify( st(j['tx'][0]['inputs'][0]['script']))
-    alpha = ''.join(map(chr, list(range(32, 126))))
-    cbtext = ''.join(map(chr, filter(lambda x: chr(x) in alpha, bytearray(cb))))
+    # Read coinbase field with np-chars filtered out
+    # get_block_coinbase(0) return Genesis Block text
+    j = _get_block(inp)
+    cb = binascii.unhexlify( str(j['tx'][0]['inputs'][0]['script']))
+    asciichars = ''.join(map(chr, list(range(32,126))))
+    cbtext = ''.join(map(chr, filter(lambda x: chr(x) in asciichars, bytearray(cb))))
     return cbtext if not '' else None
